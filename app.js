@@ -191,7 +191,7 @@ async function scrapeData () {
 
 app.get('/data', (req, res) => {
   try {
-    const data = fs.writeFileSync('./data.json', 'utf-8')
+    const data = fs.readFileSync('./data.json', 'utf-8')
     const parsedData = JSON.parse(data).sort((a, b) => {
       const dateA = new Date(a.dateOfScraping)
       const dateB = new Date(b.dateOfScraping)

@@ -1,5 +1,5 @@
 const { join } = require('path')
 
-module.exports = () => ({
+module.exports = {
   cacheDirectory: join(__dirname, '.cache', 'puppeteer')
-})
+}
