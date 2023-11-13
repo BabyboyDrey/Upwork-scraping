@@ -34,7 +34,7 @@ dotenv.config()
 
 let browser
 
-async function scrapeData() {
+async function scrapeData () {
   try {
     browser = await puppeteer.launch({ headless: false, timeout: 100000 })
     const page = await browser.newPage()
@@ -48,7 +48,10 @@ async function scrapeData() {
       }
     )
 
-    await page.waitForSelector('#login_username.air3-input', { visible: true, timeout: 100000 })
+    await page.waitForSelector('#login_username.air3-input', {
+      visible: true,
+      timeout: 100000
+    })
 
     await page.type('#login_username.air3-input', 'darebabalola92@gmail.com')
 
@@ -60,7 +63,7 @@ async function scrapeData() {
     // })
     await page.waitForSelector('#login_password', { visible: true })
 
-   await page.type('#login_password', 'Abayomie84984')
+    await page.type('#login_password', 'Abayomie84984')
 
     await page.waitForSelector('#login_control_continue', { visible: true })
     await page.evaluate(() => {
@@ -72,56 +75,51 @@ async function scrapeData() {
       { visible: true, timeout: 100000 }
     )
 
-    
     // page.on('console', (msg) => {
     //   for (let i = 0; i < msg.args().length; ++i)
     //     console.log(`${i}: ${msg.args()[i]}`);
     // });
-    
+
     // await page.evaluate(() => {
     //   console.log('height:', document.body.scrollHeight);
     // });
-    
-    await page.waitForTimeout(300000);
 
+    await page.waitForTimeout(300000)
 
-    await page.evaluate(()=> {
-     window.scrollTo(0, document.body.scrollHeight / 1.3);
-     console.log('height:',document.body.scrollHeight)
-    }) 
+    await page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight / 1.3)
+      console.log('height:', document.body.scrollHeight)
+    })
 
-    await page.waitForTimeout(40000);
+    await page.waitForTimeout(40000)
 
-    await page.evaluate(()=> {
-      window.scrollTo(0, document.body.scrollHeight / 3);
-    }) 
+    await page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight / 3)
+    })
 
-    await page.waitForTimeout(40000);
+    await page.waitForTimeout(40000)
 
-    await page.evaluate(()=> {
-      window.scrollTo(0, document.body.scrollHeight * 0.25);
-    }) 
+    await page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight * 0.25)
+    })
 
-    await page.waitForTimeout(40000);
+    await page.waitForTimeout(40000)
 
-    await page.evaluate(()=> {
-      window.scrollTo(0, document.body.scrollHeight / 8);
-    }) 
+    await page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight / 8)
+    })
 
-    await page.waitForTimeout(40000);
+    await page.waitForTimeout(40000)
 
+    await page.evaluate(() => {
+      window.scrollTo(0, 0)
+    })
 
-    await page.evaluate(()=> {
-      window.scrollTo(0, 0);
-    });
+    await page.waitForTimeout(40000)
 
-    await page.waitForTimeout(40000);
-
-
-    await page.evaluate(()=> {
-      window.scrollTo(0, document.body.scrollHeight);
-    }) 
-         
+    await page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight)
+    })
 
     const content = await page.content()
     const $ = cheerio.load(content)
@@ -169,38 +167,38 @@ async function scrapeData() {
     })
 
     fs.writeFileSync('./data.json', JSON.stringify(jobArray), 'utf-8')
-    
   } catch (err) {
-    console.log(`Error: ${err}`);
+    console.log(`Error: ${err}`)
   } finally {
-    if(browser) {
-    await browser.close();
+    if (browser) {
+      await browser.close()
     }
-  process.exit(1); 
+    process.exit(1)
   }
 }
 
-app.get('/data', (req, res)=> {
- try{const data = fs.writeFileSync('./data.json', 'utf-8')
- const parsedData = JSON.parse(data).sort((a, b) => {
-  const dateA = new Date(a.dateOfScraping);
-  const dateB = new Date(b.dateOfScraping);
+app.get('/data', (req, res) => {
+  try {
+    const data = fs.writeFileSync('./data.json', 'utf-8')
+    const parsedData = JSON.parse(data).sort((a, b) => {
+      const dateA = new Date(a.dateOfScraping)
+      const dateB = new Date(b.dateOfScraping)
 
- 
-  return dateB - dateA;
-});
- res.status(200).json(parsedData)} catch(err){
-  res.status(500).json(`Error: err getting data, here's err details; ${err}`)
- }
+      return dateB - dateA
+    })
+    res.status(200).json(parsedData)
+  } catch (err) {
+    res.status(500).json(`Error: err getting data, here's err details; ${err}`)
+  }
 })
 
-app.listen(process.env.PORT, async (req, res)=> {
+app.listen(process.env.PORT, async (req, res) => {
   console.log(`server list on ${process.env.PORT}`)
 
   await scrapeData()
   console.log('Data scraped scuccessful')
 })
 
-app.get('/', async (req, res)=> {
-res.send(`Data scraping successful, hit '/data' to see data`)
+app.get('/', async (req, res) => {
+  res.send(`Data scraping successful, hit '/data' to see data`)
 })
