@@ -36,7 +36,19 @@ let browser
 
 async function scrapeData () {
   try {
-    browser = await puppeteer.launch({ headless: false, timeout: 100000 })
+    browser = await puppeteer.launch({
+      args: [
+        '--disable-setuid-sandbox',
+        '--non-sandbox',
+        '--single-process',
+        '--no-zygote'
+      ],
+      executablePath:
+        process.env.NODE_ENV === 'production'
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
+      timeout: 100000
+    })
     const page = await browser.newPage()
 
     page.on('error', error => console.error(`Page error: ${error}`))
